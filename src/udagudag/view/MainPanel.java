@@ -21,26 +21,26 @@ public class MainPanel extends JPanel {
 	private JList<String> emailsList;
 	private JScrollPane scrollEmailsListPane;
 	private JButton sendButton;
-	
+
 	public MainPanel(int width, int height) {
 		setPreferredSize(new Dimension(width, height));
 		setLayout(new BorderLayout());
-		
+
 		chatArea = new JTextArea();
 		chatArea.setFont(new Font("Courier New", Font.BOLD, 18));
 		chatArea.setEditable(false);
 		chatArea.setLineWrap(true);
-		((DefaultCaret)chatArea.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE); // Makes scrollbar always scrolled down.
+		((DefaultCaret) chatArea.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE); // Makes scrollbar always scrolled down.
 		scrollChatPane = new JScrollPane(chatArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		messageArea = new JTextArea();
 		messageArea.setFont(new Font("Courier New", Font.BOLD, 16));
 		messageArea.setLineWrap(true);
-		((DefaultCaret)messageArea.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE); // Makes scrollbar always scrolled down.
+		((DefaultCaret) messageArea.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE); // Makes scrollbar always scrolled down.
 		scrollMessagePane = new JScrollPane(messageArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		
+
 		emailsList = new JList<String>();
 		scrollEmailsListPane = new JScrollPane(emailsList, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -53,25 +53,24 @@ public class MainPanel extends JPanel {
 		scrollEmailsListPane.setPreferredSize(new Dimension(width / 2, height / 4));
 		sendButton.setPreferredSize(new Dimension(width, height / 8));
 
-
 		add(scrollChatPane, BorderLayout.PAGE_START);
 		add(scrollMessagePane, BorderLayout.LINE_START);
 		add(scrollEmailsListPane, BorderLayout.LINE_END);
-		add(sendButton, BorderLayout.PAGE_END);	
+		add(sendButton, BorderLayout.PAGE_END);
 	}
-	
-	public JTextArea getChatArea() {
-		return chatArea;
+
+	public JButton getSendButton() {
+		return sendButton;
 	}
 
 	public JTextArea getMessageArea() {
 		return messageArea;
 	}
 
-	public JButton getSendButton() {
-		return sendButton;
+	public JTextArea getChatArea() {
+		return chatArea;
 	}
-	
+
 	public JList<String> getEmailsList() {
 		return emailsList;
 	}

@@ -7,7 +7,7 @@ public class UpdatedListToAllBackCommand implements BackCommand {
 	public String className = "UpdatedListToAllBackCommand";
 	public boolean success;
 	public List<String> emailsList;
-	
+
 	@Override
 	public void execute() {
 		if (success) {

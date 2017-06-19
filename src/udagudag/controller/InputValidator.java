@@ -9,16 +9,17 @@ import java.util.regex.Pattern;
 public class InputValidator {
 
 	public boolean isDateValid(String date, String format) {
-		if (date.length() != format.length())
+		if (date.length() != format.length()) {
 			return false;
+		}
 		try {
 			DateFormat df = new SimpleDateFormat(format);
 			df.setLenient(false);
-
+			
 			// Exception is not thrown here if day and month is
 			// correct AND the first char of year is a digit.
 			df.parse(date);
-			
+
 			// So if we have correct day and correct month
 			// and we know the year has 4 chars we can try to parse it.
 			Integer year = Integer.parseInt(date.substring(6, 10));
@@ -47,9 +48,10 @@ public class InputValidator {
 	}
 
 	public boolean isEmailValid(final String email) {
-		if (email.length() > 50)
+		if (email.length() > 50) {
 			return false;
-		String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";		
+		}
+		String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 		Pattern pattern = Pattern.compile(emailPattern);
 		Matcher matcher = pattern.matcher(email);
 		return matcher.matches();
@@ -62,7 +64,7 @@ public class InputValidator {
 			char[] array = firstName.toCharArray();
 			if (!(array[0] >= 'A' && array[0] <= 'Z'))
 				return false;
-			for (int i=1; i < array.length; i++)
+			for (int i = 1; i < array.length; i++)
 				if (!(array[i] >= 'a' && array[i] <= 'z'))
 					return false;
 			return true;

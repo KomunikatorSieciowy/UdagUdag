@@ -17,8 +17,7 @@ public class View extends JFrame {
 	private SignUpPanel1 signUpPanel1;
 	private SignUpPanel2 signUpPanel2;
 	private MainPanel mainPanel;
-
-
+	
 	public View() {
 
 		setTitle("UdagUdag");
@@ -34,9 +33,9 @@ public class View extends JFrame {
 
 	private void init() {
 		loadingPanel = new LoadingPanel(width, height);
-		logInPanel = new LogInPanel(width, height);		
-		signUpPanel1 = new SignUpPanel1(width,height);
-		signUpPanel2 = new SignUpPanel2(width,height);
+		logInPanel = new LogInPanel(width, height);
+		signUpPanel1 = new SignUpPanel1(width, height);
+		signUpPanel2 = new SignUpPanel2(width, height);
 		mainPanel = new MainPanel(width, height);
 	}
 
@@ -109,22 +108,6 @@ public class View extends JFrame {
 		mainPanel.getMessageArea().getActionMap().put("doEnterAction", action);
 	}
 
-	public LogInPanel getLogInPanel() {
-		return logInPanel;
-	}
-
-	public SignUpPanel1 getSignUpPanel1() {
-		return signUpPanel1;
-	}
-
-	public SignUpPanel2 getSignUpPanel2() {
-		return signUpPanel2;
-	}
-
-	public MainPanel getMainPanel() {
-		return mainPanel;
-	}
-
 	public boolean askYesNoQuestion(String title, String question) {
 		int choice = JOptionPane.showOptionDialog(null, question, title, JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, null, null);
@@ -141,5 +124,21 @@ public class View extends JFrame {
 			ipAddress = "empty";
 		}
 		return ipAddress;
+	}
+
+	public LogInPanel getLogInPanel() {
+		return logInPanel;
+	}
+
+	public SignUpPanel1 getSignUpPanel1() {
+		return signUpPanel1;
+	}
+
+	public SignUpPanel2 getSignUpPanel2() {
+		return signUpPanel2;
+	}
+
+	public MainPanel getMainPanel() {
+		return mainPanel;
 	}
 }

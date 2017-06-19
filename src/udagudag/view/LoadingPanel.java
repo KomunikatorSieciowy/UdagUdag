@@ -16,14 +16,14 @@ public class LoadingPanel extends JLabel {
 
 		setPreferredSize(new Dimension(width, height));
 		setOpaque(true);
-		setIcon(new ImageIcon(Main.class.getResource("/background.png")));
+		setIcon(new ImageIcon(Main.class.getResource("/images/background.png")));
 		setLayout(new GridBagLayout());
-
+		
 		centeredLabel = new JLabel();
-		centeredLabel.setPreferredSize(new Dimension(128,128));
+		centeredLabel.setPreferredSize(new Dimension(128, 128));
 		centeredLabel.setOpaque(false);
-		centeredLabel.setIcon(new ImageIcon(Main.class.getResource("/loading.gif")));
+		centeredLabel.setIcon(new ImageIcon(Main.class.getResource("/images/loading.gif")));
 
-		this.add(centeredLabel);		
+		this.add(centeredLabel);
 	}
 }

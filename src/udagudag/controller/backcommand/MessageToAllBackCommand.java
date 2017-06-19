@@ -4,7 +4,7 @@ public class MessageToAllBackCommand implements BackCommand {
 
 	public String className = "MessageToAllBackCommand";
 	public boolean success;
-	
+
 	@Override
 	public void execute() {
 		if (success) {

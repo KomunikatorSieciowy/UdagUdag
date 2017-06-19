@@ -5,7 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.io.InputStream;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
@@ -13,6 +17,8 @@ import javax.swing.JTextArea;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 import udagudag.controller.backcommand.BackCommand;
 import udagudag.controller.backcommand.LogInBackCommand;
 import udagudag.controller.backcommand.MessageBackCommand;
@@ -28,7 +34,7 @@ import udagudag.model.User;
 import udagudag.view.View;
 
 public class Controller {
-	
+
 	private static Controller instance = new Controller();
 	public static Controller getInstance() {
 		return instance;
@@ -42,13 +48,24 @@ public class Controller {
 
 	private Controller() {
 		view = new View();
-		user = new User();
 		view.addButtonsListener(new ButtonsListener());
 		view.bindEnterActionToMessageArea(new EnterAction());
 		view.addWindowListener(new WindowListenerForClosing());
+		try {
+			String soundFilePath = "/sounds/welcome.wav";
+			InputStream inputStream = getClass().getResourceAsStream(soundFilePath);
+			AudioStream audioStream = new AudioStream(inputStream);
+			AudioPlayer.player.start(audioStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		user = new User();
 		ipAddress = view.askForIpAddress();
 		inputValidator = new InputValidator();
-		tcpClient = new TcpClient(this);
+		tcpClient = new TcpClient();
+		tellConnectionIsNotReady();
+		tcpClient.connectToServer(ipAddress);
+		tellConnectionIsReady();
 		tcpClient.start();
 	}
 
@@ -74,11 +91,9 @@ public class Controller {
 
 					user.setEmail(email);
 					user.setPassword(password);
-										
-					LogInCommandData logInCommandData = new LogInCommandData();
-					logInCommandData.email = user.getEmail();
-					logInCommandData.password = user.getPassword();
-					String json = new GsonBuilder().create().toJson(logInCommandData, LogInCommandData.class);					
+
+					LogInCommandData logInCommandData = new LogInCommandData(user.getEmail(), user.getPassword());
+					String json = new GsonBuilder().create().toJson(logInCommandData, LogInCommandData.class);
 					tcpClient.sendCommandToServer(json);
 
 					view.showLoadingPanel();
@@ -124,7 +139,7 @@ public class Controller {
 					user.setEmail(email);
 					user.setBirthday(birthday);
 					user.setPassword(password);
-					
+
 					view.showSignUpPanel2();
 
 				} else if (actionCommand.equals("Back")) {
@@ -178,14 +193,8 @@ public class Controller {
 					user.setPlace(place);
 					user.setState(state);
 
-					SignUpCommandData signUpCommandData = new SignUpCommandData();
-					signUpCommandData.email = user.getEmail();
-					signUpCommandData.birthday = user.getBirthday();
-					signUpCommandData.password = user.getPassword();
-					signUpCommandData.firstName = user.getFirstName();
-					signUpCommandData.lastName = user.getLastName();
-					signUpCommandData.place = user.getPlace();
-					signUpCommandData.state = user.getState();
+					SignUpCommandData signUpCommandData = new SignUpCommandData(user.getEmail(), user.getBirthday(), user.getPassword(),
+							user.getFirstName(), user.getLastName(), user.getPlace(), user.getState());
 					String json = new GsonBuilder().create().toJson(signUpCommandData, SignUpCommandData.class);
 					tcpClient.sendCommandToServer(json);
 
@@ -199,9 +208,8 @@ public class Controller {
 				if (actionCommand.equals("Send")) {
 					JTextArea messageArea = view.getMainPanel().getMessageArea();
 					String message = user.getEmail() + ": " + messageArea.getText();
-					
-					MessageToAllCommandData messageToAllCommandData = new MessageToAllCommandData();
-					messageToAllCommandData.message = message;
+
+					MessageToAllCommandData messageToAllCommandData = new MessageToAllCommandData(message);
 					String json = new GsonBuilder().create().toJson(messageToAllCommandData, MessageToAllCommandData.class);
 					tcpClient.sendCommandToServer(json);
 
@@ -272,36 +280,42 @@ public class Controller {
 		}
 		sendButton.setEnabled(false);
 	}
-	
+
 	public void requestAddingUserToList() {
-		UpdatedListToAllCommandData updateListCommandData = new UpdatedListToAllCommandData();
-		updateListCommandData.connected = true;
-		updateListCommandData.email = user.getEmail();
+		UpdatedListToAllCommandData updateListCommandData = new UpdatedListToAllCommandData(user.getEmail(), true);
 		String json = new GsonBuilder().create().toJson(updateListCommandData, UpdatedListToAllCommandData.class);
 		tcpClient.sendCommandToServer(json);
 	}
 	
 	public void requestRemovingUserFromList() {
-		UpdatedListToAllCommandData updateListCommandData = new UpdatedListToAllCommandData();
-		updateListCommandData.connected = false;
-		updateListCommandData.email = user.getEmail();
+		try {
+			String soundFilePath = "/sounds/goodbye.wav";
+			InputStream inputStream = getClass().getResourceAsStream(soundFilePath);
+			AudioStream audioStream = new AudioStream(inputStream);
+			AudioPlayer.player.start(audioStream);
+			Thread.sleep(500); // Could be better if we count the real duration.
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		UpdatedListToAllCommandData updateListCommandData = new UpdatedListToAllCommandData(user.getEmail(), false);
 		String json = new GsonBuilder().create().toJson(updateListCommandData, UpdatedListToAllCommandData.class);
-		tcpClient.sendCommandToServer(json);		
+		tcpClient.sendCommandToServer(json);
+	}
+
+	public void setTcpClient(TcpClient tcpClient) {
+		this.tcpClient = tcpClient;
 	}
 
 	public String getIpAddress() {
 		return ipAddress;
 	}
 
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = ipAddress;
-	}
-	
-	public void setTcpClient(TcpClient tcpClient) {
-		this.tcpClient = tcpClient;
-	}
-	
 	public View getView() {
-		return this.view;
+		return view;
+	}
+	
+	public User getUser() {
+		return user;
 	}
 }
